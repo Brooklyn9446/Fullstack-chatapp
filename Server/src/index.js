@@ -7,9 +7,6 @@ import cookieParser from "cookie-parser"
 import messageRouter from "./Routes/messageRouter.js"
 import path from "path"
 import {app,server} from "./Lib/socket.js"
-import listEndpoints from 'express-list-endpoints';
-
-
 
 dotenv.config()
 const PORT=process.env.PORT
@@ -28,20 +25,12 @@ app.use('/api/auth',authRouter)
 app.use('/api/messages',messageRouter)
 
 if(process.env.NODE_ENV=="production"){
-    app.use(express.static(path.join(__dirname,"../Client/dist")))
+    app.use(express.static(path.join(__dirname,"../../Client/dist")))
 
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../Client","dist","index.html"))
+    app.get("/(.*)/",(req,res)=>{
+        res.sendFile(path.join(__dirname,"../../Client","dist","index.html"))
     })
 }
-const endpoints = listEndpoints(app);
-console.log("==== REGISTERED ROUTES ====");
-endpoints.forEach(route => {
-  console.log(`${route.methods.join(', ')} ${route.path}`);
-});
-console.log("===========================");
-
-
 server.listen(PORT,()=>{
     console.log('Server is running on Port:',PORT)
     connectDB()
